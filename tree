@@ -1,0 +1,137 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+class Tree {
+private:
+    std::string species;
+    std::string location;
+    int age;
+    double height;
+
+public:
+    Tree() : species("Unknown"), location("Unknown"), age(0), height(0.0) {}
+
+    Tree(std::string species, std::string location, int age, double height) 
+        : species(species), location(location), age(age), height(height) {}
+
+    std::string getSpecies() const { return species; }
+    std::string getLocation() const { return location; }
+    int getAge() const { return age; }
+    double getHeight() const { return height; }
+
+    void setSpecies(const std::string& s) { species = s; }
+    void setLocation(const std::string& l) { location = l; }
+    void setAge(int a) { age = a; }
+    void setHeight(double h) { height = h; }
+
+    std::string getTreeCategory() const {
+        if (age < 10) return "Young";
+        else if (age < 50) return "Mature";
+        else return "Old";
+    }
+
+    void display() const {
+        std::cout << "Species: " << species << ", Location: " << location
+                  << ", Age: " << age << " years, Height: " << height 
+                  << " meters, Category: " << getTreeCategory() << std::endl;
+    }
+};
+
+void displayMenu() {
+    std::cout << "\nMenu:" << std::endl;
+    std::cout << "1. Add an empty tree" << std::endl;
+    std::cout << "2. Add a tree with data" << std::endl;
+    std::cout << "3. Edit a tree" << std::endl;
+    std::cout << "4. Display all trees" << std::endl;
+    std::cout << "5. Sort trees by age" << std::endl;
+    std::cout << "6. Exit" << std::endl;
+}
+
+int main() {
+    std::vector<Tree> trees;
+    int choice;
+    
+    do {
+        displayMenu();
+        std::cout << "Choose an option: ";
+        std::cin >> choice;
+        
+        switch (choice) {
+            case 1:
+                trees.emplace_back();
+                std::cout << "Empty tree added." << std::endl;
+                break;
+            case 2: {
+                std::string species, location;
+                int age;
+                double height;
+                std::cout << "Enter tree species: ";
+                std::cin >> species;
+                std::cout << "Enter location: ";
+                std::cin >> location;
+                std::cout << "Enter age: ";
+                std::cin >> age;
+                std::cout << "Enter height: ";
+                std::cin >> height;
+                trees.emplace_back(species, location, age, height);
+                std::cout << "Tree added." << std::endl;
+                break;
+            }
+            case 3: {
+                size_t index;
+                std::cout << "Enter the index of the tree to edit: ";
+                std::cin >> index;
+                if (index >= trees.size()) {
+                    std::cout << "Invalid index!" << std::endl;
+                    break;
+                }
+                int field;
+                std::cout << "Choose a field to edit (1-species, 2-location, 3-age, 4-height): ";
+                std::cin >> field;
+                if (field == 1) {
+                    std::string species;
+                    std::cout << "Enter new species: ";
+                    std::cin >> species;
+                    trees[index].setSpecies(species);
+                } else if (field == 2) {
+                    std::string location;
+                    std::cout << "Enter new location: ";
+                    std::cin >> location;
+                    trees[index].setLocation(location);
+                } else if (field == 3) {
+                    int age;
+                    std::cout << "Enter new age: ";
+                    std::cin >> age;
+                    trees[index].setAge(age);
+                } else if (field == 4) {
+                    double height;
+                    std::cout << "Enter new height: ";
+                    std::cin >> height;
+                    trees[index].setHeight(height);
+                } else {
+                    std::cout << "Invalid choice!" << std::endl;
+                }
+                break;
+            }
+            case 4:
+                for (const auto& tree : trees) {
+                    tree.display();
+                }
+                break;
+            case 5:
+                std::sort(trees.begin(), trees.end(), [](const Tree& a, const Tree& b) {
+                    return a.getAge() < b.getAge();
+                });
+                std::cout << "Trees sorted by age." << std::endl;
+                break;
+            case 6:
+                std::cout << "Exiting program..." << std::endl;
+                break;
+            default:
+                std::cout << "Invalid choice, try again." << std::endl;
+        }
+    } while (choice != 6);
+    
+    return 0;
+}
